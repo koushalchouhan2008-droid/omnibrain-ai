@@ -1,0 +1,57 @@
+OMNIBRAIN AI — ANDROID + LAPTOP — NOVEMBER 2026 RESPONSIVE UPDATE
+==================================================================
+
+KYA FIX HUA?
+- Android pe page chhota/patla hone wala bug fix: mobile tabs ab bottom par hain.
+- 320px, 360px, 393px Android widths aur laptop layout check kiye gaye.
+- Sidebar overlay, chat text, send button, controls, cards aur modal sizing improve.
+- Dark fantasy landscape, golden highlights aur original custom SVG artwork added.
+- AI APIs, login, chat, history, settings aur existing app features preserved.
+
+LAPTOP PAR CHALANE KA TARIKA:
+1. ZIP poora extract karo.
+2. Node.js 22.13 ya newer install karo: https://nodejs.org/
+3. Windows mein START-WINDOWS.bat double click karo.
+4. Browser mein terminal ka local URL kholo: aam taur par
+   http://127.0.0.1:3000
+5. Terminal/window ko band mat karna; band hua to backend stop ho jayega.
+
+ANDROID PAR CHALANE KE 2 TARIKAY:
+
+A) SAME WI-FI PAR (PRIVATE NETWORK ONLY)
+1. Laptop aur phone ko same trusted Wi-Fi network par rakho.
+2. Windows CMD mein extracted omnibrain-ai folder kholo.
+3. Ye commands chalao:
+   set HOST=0.0.0.0
+   npm start
+4. Laptop mein 'ipconfig' chala kar Wi-Fi adapter ka IPv4 address dekho.
+5. Android Chrome mein http://LAPTOP-IP:3000 kholo.
+   Example: Laptop IP 192.168.1.25 ho TO
+   http://192.168.1.25:3000
+   (Example IP apna actual IP nahin hota.)
+6. Windows Firewall prompt par PRIVATE NETWORK ko allow karna pad sakta hai.
+   Sirf apne trusted Wi-Fi par use karo. Public Wi-Fi ya router port
+   forwarding ke zariye is development server ko expose mat karna.
+7. Phone par local http traffic encrypted nahi hota. Real credentials aur
+   API keys ke liye secure HTTPS deployment zyada safe hai.
+
+B) INTERNET PAR KAHIN SE (HTTPS WEBSITE)
+- Node.js backend aur persistent data ko secure hosting par deploy karo.
+- HTTPS domain, trusted reverse proxy aur ORIGIN variable configure karo.
+- Agar Cloudflare quick tunnel use karte ho to uska trycloudflare.com
+  temporary URL badal sakta hai; har naya tunnel alag link de sakta hai.
+- Old former.trycloudflare.com link ZIP se khud update NAHI hoga.
+- Production public launch se pahle docs/SECURITY.md padhna zaroori hai.
+- Ye ZIP public website ya Android APK nahi hai: ye responsive web-app code hai.
+
+IMPORTANT:
+- API models chalane ke liye Connections mein valid provider key required.
+- Third-party APIs per-request charges laga sakti hain.
+- Game artwork copy nahi kiya gaya. Fantasy design original custom-made
+  landscape hai, Black Myth: Wukong ke cinematic mood se inspired.
+
+TESTING:
+  npm run check
+
+NOTE: Agar purani hosted website mein purana UI aa raha hai, update ki hui
+ZIP files ko us hosting/server par deploy/restart karna padega.

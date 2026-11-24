@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101718">
+  <meta name="description" content="OMNIBRAIN AI — your secure multi-model AI workspace">
+  <title>OMNIBRAIN AI · Intelligent Workspace</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" type="module" defer></script>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark" aria-hidden="true"><img src="/assets/celestial-emblem.svg" alt=""></div><div><strong>OMNIBRAIN<span> AI</span></strong><small>YOUR INTELLIGENCE HUB</small></div></div>
+      <button class="new-chat" id="new-chat">＋ <span>New conversation</span><span class="shortcut">N</span></button>
+      <div class="sidebar-caption">WORKSPACE</div>
+      <nav class="primary-nav" aria-label="Workspace">
+        <button data-view="chat" class="nav-item active"><span class="nav-icon">◈</span> AI Chat</button>
+        <button data-view="connections" class="nav-item"><span class="nav-icon">⬡</span> Connections <span class="nav-count" id="connection-count">0</span></button>
+        <button data-view="usage" class="nav-item"><span class="nav-icon">▥</span> Activity & usage</button>
+        <button data-view="settings" class="nav-item"><span class="nav-icon">⚙</span> Settings</button>
+      </nav>
+      <div class="recent-header"><span>RECENT CHATS</span><button id="refresh-chats" title="Refresh chats" aria-label="Refresh chats">↻</button></div>
+      <div id="chat-list" class="chat-list"><p class="muted-small">Your conversations appear here.</p></div>
+      <div class="sidebar-foot"><span class="status-dot"></span><span>Private by design</span><span class="version">v0.1.1 MVP</span></div>
+    </aside>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-start"><button id="menu-button" class="icon-button menu-button" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">☰</button><div class="topbar-path"><span>Workspace</span><span class="path-sep">/</span><strong id="view-heading">AI Chat</strong></div></div>
+        <div class="topbar-end"><span class="online-indicator"><span></span>Local workspace</span><button id="user-avatar" class="avatar" title="Account settings">?</button></div>
+      </header>
+      <section id="view-chat" class="view chat-view is-welcome">
+        <div class="chat-head"><div><p class="eyebrow">INTELLIGENCE, UNIFIED</p><h1 id="chat-title">Your AI workspace</h1></div><div class="chat-head-actions"><label class="field-compact"><span>MODE</span><select id="mode"><option value="auto">✦ Smart Auto</option><option value="manual">◎ Manual</option><option value="ultimate">✳ Ultimate Brain</option></select></label><button id="export-chat" class="subtle-button" title="Export active chat">Export ↗</button></div></div>
+        <div class="thread-area" id="thread-area"><div id="thread" class="thread" aria-live="polite">
+          <div id="welcome" class="welcome">
+            <div class="hero-kicker"><span class="kicker-line"></span> THE POWER OF MULTIPLE MINDS <span class="kicker-line"></span></div>
+            <div class="hero-mark"><img src="/assets/celestial-emblem.svg" alt="" aria-hidden="true"></div>
+            <div class="hero-subline">INTELLIGENCE, REIMAGINED</div>
+            <h2>Think beyond<br><span>the ordinary.</span></h2>
+            <p>Every great journey begins with a question. Explore ideas, research faster and build with your AI minds in one powerful workspace.</p>
+            <div class="hero-divider"><span></span><b>✦</b><span></span></div>
+            <div class="suggestions"><button class="suggestion" data-prompt="Explain machine learning in simple Hindi with examples."><span class="suggestion-icon">◈</span><span>Learn something new<small>Explain machine learning</small></span><span class="suggestion-arrow">↗</span></button><button class="suggestion" data-prompt="Create a clear step-by-step plan to launch my small business."><span class="suggestion-icon">▦</span><span>Plan a project<small>Build a launch roadmap</small></span><span class="suggestion-arrow">↗</span></button><button class="suggestion" data-prompt="Review my idea for an AI-powered study assistant and list trade-offs."><span class="suggestion-icon">✧</span><span>Explore an idea<small>Analyze a product concept</small></span><span class="suggestion-arrow">↗</span></button></div>
+          </div>
+        </div></div>
+        <div class="composer-wrapper"><div id="run-status" class="run-status" role="status" aria-live="polite"></div><div class="composer"><div id="selection-chips" class="selection-chips"></div><textarea id="prompt" rows="2" maxlength="16000" placeholder="Ask anything… English, Hindi, or Hinglish" aria-label="Message"></textarea><div class="composer-controls"><div class="composer-tools"><button id="plus-button" class="plus-button" title="Choose sources and AI models" aria-label="Choose sources and AI models">＋</button><button id="search-toggle" class="tool-toggle" type="button">⌕ Web search <span id="search-state">Off</span></button><span id="model-summary" class="model-summary">Smart routing</span></div><div><button id="stop-button" class="stop-button hidden" title="Cancel run">■ Stop</button><button id="send-button" class="send-button" aria-label="Send message">➤</button></div></div></div><p class="composer-disclaimer">Responses come from your configured providers. Verify important information. API charges may apply.</p></div>
+        <div id="plus-panel" class="plus-panel hidden" role="dialog" aria-label="Choose tools and models"><div class="panel-heading"><strong>Choose intelligence</strong><button id="close-plus" class="plain-x" aria-label="Close">✕</button></div><p>Manual mode honors exactly the models you select. Auto uses a suitable connected provider.</p><div class="panel-caption">CONNECTED AI PROVIDERS</div><div id="model-picker" class="model-picker"></div><div class="panel-caption">RESEARCH SOURCES</div><label class="picker-row"><span>⌕ Brave Web Search <small>Search the live web using your API key</small></span><input type="checkbox" id="picker-search"></label><div class="panel-footer"><button id="clear-selection" class="subtle-button">Clear selections</button><button id="apply-selection" class="small-primary">Apply</button></div></div>
+      </section>
+      <section id="view-connections" class="view content-page hidden"><div class="page-intro"><p class="eyebrow">MODEL & TOOL MARKETPLACE</p><h1>Connections</h1><p>Connect supported APIs securely. Your credentials are encrypted server-side and never sent back to the browser.</p></div><div class="info-strip">🔒 Keys are saved locally in encrypted storage. A connection is only marked verified after an actual API test succeeds.</div><div id="connection-grid" class="connection-grid"></div></section>
+      <section id="view-usage" class="view content-page hidden"><div class="page-intro"><p class="eyebrow">MEASURABLE ACTIVITY</p><h1>Activity & usage</h1><p>Real request counts and provider-reported token usage. Prices are not guessed.</p></div><div id="stat-grid" class="stat-grid"></div><div class="table-card"><h2>Recent API requests</h2><div class="table-wrap"><table><thead><tr><th>Provider</th><th>Model</th><th>Input</th><th>Output</th><th>Status</th><th>Time</th></tr></thead><tbody id="usage-rows"></tbody></table></div></div></section>
+      <section id="view-settings" class="view content-page hidden"><div class="page-intro"><p class="eyebrow">CONTROL & PRIVACY</p><h1>Settings</h1><p>Your account, appearance, and workspace controls.</p></div><div class="settings-card"><h2>Account</h2><div class="setting-line"><span>Name</span><strong id="account-name">—</strong></div><div class="setting-line"><span>Email</span><strong id="account-email">—</strong></div><button class="danger-outline" id="logout">Sign out</button></div><div class="settings-card"><h2>Appearance</h2><div class="setting-line"><span>Color theme</span><select id="theme-select"><option value="dark">Dark</option><option value="light">Light</option></select></div></div><div class="settings-card"><h2>Coming in later phases</h2><p class="muted">Knowledge base, automations, image and video studios, OAuth app connectors, and agent workflows are planned in the supplied blueprint, but are not implemented in this MVP.</p></div></section>
+    </main>
+    <nav class="mobile-tabs" aria-label="Mobile navigation"><button data-view="chat" class="active">◈<span>Chat</span></button><button data-view="connections">⬡<span>Connect</span></button><button data-view="usage">▥<span>Usage</span></button><button data-view="settings">⚙<span>Settings</span></button></nav>
+  </div>
+  <div id="auth-screen" class="auth-screen hidden"><div class="auth-glow"></div><div class="auth-card"><div class="brand auth-brand"><div class="brand-mark"><img src="/assets/celestial-emblem.svg" alt=""></div><div><strong>OMNIBRAIN<span> AI</span></strong><small>UNIFIED INTELLIGENCE</small></div></div><div class="auth-caption">YOUR AI OPERATING WORKSPACE</div><h1 id="auth-title">Welcome back</h1><p>Securely connect your AI models and work from one place.</p><div class="auth-switch"><button id="sign-in-tab" class="active">Sign in</button><button id="register-tab">Create account</button></div><form id="auth-form"><label id="name-field" class="form-field hidden">Your name<input id="auth-name" type="text" autocomplete="name" minlength="2" maxlength="70" placeholder="Your name"></label><label class="form-field">Email address<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label><label class="form-field">Password<input id="auth-password" type="password" minlength="12" required placeholder="At least 12 characters"></label><button id="auth-submit" class="auth-submit" type="submit">Sign in →</button><p id="auth-error" class="error-text" role="alert"></p></form><p class="auth-small">No subscription included. You connect your own supported provider APIs.</p></div></div>
+  <div id="credential-modal" class="modal-overlay hidden"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="credential-title"><div class="modal-heading"><h2 id="credential-title">Connect provider</h2><button id="close-credential" class="plain-x" aria-label="Close dialog">✕</button></div><p id="credential-info" class="muted"></p><form id="credential-form"><label class="form-field">API key <span class="tiny-note">(stored encrypted; never displayed again)</span><input type="password" id="credential-key" required minlength="8" autocomplete="off" placeholder="Paste your API key"></label><label class="form-field" id="model-field">Model identifier <span class="tiny-note">(editable)</span><input id="credential-model" maxlength="100"></label><button type="submit" class="auth-submit">Save secure connection</button><p id="credential-error" class="error-text" role="alert"></p></form></div></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+</body>
+</html>

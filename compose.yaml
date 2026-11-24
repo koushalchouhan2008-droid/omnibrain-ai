@@ -1,0 +1,16 @@
+services:
+  omnibrain:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      DB_DIR: /app/data
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:?Set APP_ENCRYPTION_KEY as a 64-character hex string}
+    volumes:
+      - omnibrain_data:/app/data
+    restart: unless-stopped
+volumes:
+  omnibrain_data:

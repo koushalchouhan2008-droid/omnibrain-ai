@@ -1,0 +1,40 @@
+OMNIBRAIN AI - WEBSITE NAHI KHUL RAHI? (FIXED START)
+====================================================
+
+IMPORTANT: ZIP file website hosting nahi hoti. Ye LOCAL web app hai.
+Iska link http://127.0.0.1:3000 sirf usi PC/laptop par chalta hai
+jahan Node.js server chal raha ho. Android phone par direct open nahin hoga.
+
+WINDOWS PC/LAPTOP:
+  1) ZIP ko EXTRACT karo (sirf ZIP ke andar se BAT open mat karo).
+  2) https://nodejs.org/ se Node.js v22.13+ install karo.
+  3) Extracted omnibrain-ai folder kholo.
+  4) START-WINDOWS.bat double-click karo.
+  5) Browser automatically khulega; nahin to terminal mein jo URL aaye
+     use SAME COMPUTER ke Chrome/Edge browser mein kholo.
+  6) Terminal window band mat karna; band karne se site band ho jayegi.
+
+    'This site can't be reached' => server start nahin hua. BAT ka error padho.
+    'node is not recognized' => Node.js install / restart karo.
+    'Cannot find module' => ZIP full extract karo, folder ke bahar file mat chalao.
+    'Need API key' => Connections mein provider ki genuine API key lagao.
+    'ExperimentalWarning: SQLite' => warning hai, startup failure nahi.
+
+ANDROID:
+  Direct ZIP se ye full working backend-based website open NAHI hoti.
+  Public mobile link chahiye to internet hosting/domain setup karna padega.
+  Ye zip deployable project code hai, public hosted website nahi.
+
+TECHNICAL:
+  Windows launcher now detects Node version, finds a free port, confirms
+  /api/health, opens the browser, and prints startup errors clearly.
+  Local server and automated tests were checked on Node.js 22.16.0.
+  For advanced setup see README.md. No live provider API connection is
+  claimed without valid provider credentials.
+
+
+NOVEMBER 2026 RESPONSIVE FIX:
+Agar Android mein page bahut chhota tha / right mein nav aa raha tha, vo fix
+ho gaya hai. Nayi ZIP server par run/deploy karni hogi, tab naya UI dikhega.
+Same Wi-Fi aur secure HTTPS instructions ke liye ANDROID-LAPTOP-SETUP-HINDI.txt
+padho. Black Myth: Wukong se inspired ORIGINAL cinematic vector background hai.

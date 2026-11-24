@@ -1,0 +1,40 @@
+OMNIBRAIN AI — ZIP BUILD (WORKING MVP)
+===================================
+
+Ye ZIP aapke 21-page PDF 'OMNIBRAIN AI Ultimate Master Build Prompt v2.0' par based hai.
+
+IMPORTANT: Ye actual runnable Phase 0 / early Phase 1 web app hai; PDF ke 48
+sections wali poori commercial platform abhi nahi bani. Current features:
+login/signup, encrypted API key connections, AI chat, model selector,
+OpenAI/Gemini/Claude/DeepSeek/Grok APIs, Brave search, history, usage dashboard.
+
+HOW TO START (PC / LAPTOP):
+1. ZIP extract karo.
+2. Node.js version 22.13 or later install karo (https://nodejs.org/).
+3. Windows par START-WINDOWS.bat double click karo (server start + browser open).
+   Mac/Linux par terminal mein 'npm run launch' chalao.
+4. Browser: launcher mein jo URL aaye (usually http://127.0.0.1:3000)
+   SIRF USI COMPUTER PAR URL KHOLNA JAHAN SERVER CHAL RAHA HAI.
+5. Account banao; Connections mein APNI provider API key save karo.
+6. Chat se AI use karo. Valid API key aur internet required hai.
+
+Bina valid provider API key ke AI messages ka real output nahi aayega.
+API provider alag se charge kar sakta hai.
+
+TEST: npm test
+DETAILS: README.md, docs/ROADMAP.md, docs/SECURITY.md
+ORIGINAL PDF: blueprint/OMNIBRAIN-AI-Master-Build-Prompt-v2.pdf
+
+WARNING: Node built-in SQLite in Node 22 remains experimental. This is a tested
+local MVP, NOT a fully audited/production-hardened 48-section enterprise product.
+
+IMPORTANT: Ye ZIP internet par hosted website NAHI hai.
+Android phone par 127.0.0.1 link direct nahi chalega.
+Public link ke liye secure hosting/deployment chahiye.
+Troubleshooting: OPEN-THIS-FIRST-HINDI.txt
+
+ANDROID + LAPTOP UPDATE (NOVEMBER 2026):
+- Read ANDROID-LAPTOP-SETUP-HINDI.txt (included in this ZIP).
+- Mobile bottom-navigation shrink problem fixed; fantasy artwork included.
+- Same-Wi-Fi access requires optional HOST=0.0.0.0 and laptop local IP.
+- An existing trycloudflare.com link is not updated just by extracting ZIP.
