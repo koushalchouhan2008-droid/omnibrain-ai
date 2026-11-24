@@ -22,20 +22,22 @@ export function getConfig(overrides = {}) {
   fs.mkdirSync(dbDir, { recursive: true, mode: 0o700 });
   const production = process.env.NODE_ENV === 'production';
   let secret = process.env.APP_ENCRYPTION_KEY;
-  if (!secret && !production) {
-    const secretPath = path.join(dbDir, '.development-key');
-    if (fs.existsSync(secretPath)) secret = fs.readFileSync(secretPath, 'utf8').trim();
-    else {
-      secret = crypto.randomBytes(32).toString('hex');
-      fs.writeFileSync(secretPath, secret, { mode: 0o600 });
+  if (secret) {
+    if (!/^[0-9a-f]{64}$/i.test(secret)) {
+      secret = crypto.createHash('sha256').update(secret).digest('hex');
     }
-  }
-  if (!/^[0-9a-f]{64}$/i.test(secret || '')) {
-    throw new Error('APP_ENCRYPTION_KEY must be 64 hex characters (required in production).');
+  } else {
+    const secretPath = path.join(dbDir, '.app-key');
+    if (fs.existsSync(secretPath)) {
+      secret = fs.readFileSync(secretPath, 'utf8').trim();
+    } else {
+      secret = crypto.randomBytes(32).toString('hex');
+      try { fs.writeFileSync(secretPath, secret, { mode: 0o600 }); } catch {}
+    }
   }
   return {
     port: Number(process.env.PORT || 3000),
-    host: process.env.HOST || '127.0.0.1',
+    host: process.env.HOST || (production ? '0.0.0.0' : '127.0.0.1'),
     production,
     dbDir,
     secret: Buffer.from(secret, 'hex'),

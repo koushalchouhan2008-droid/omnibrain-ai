@@ -1,13 +1,12 @@
 services:
   - type: web
     name: omnibrain-ai
-    env: docker
-    dockerfilePath: Dockerfile
+    runtime: node
     plan: free
+    buildCommand: "npm test"
+    startCommand: "node server/index.js"
     healthCheckPath: /api/health
     envVars:
-      - key: PORT
-        value: 3000
       - key: HOST
         value: 0.0.0.0
       - key: NODE_ENV
