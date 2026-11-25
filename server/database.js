@@ -85,7 +85,7 @@ export function createStore(db) {
     conversations: uid => all('SELECT id,title,created_at,updated_at FROM conversations WHERE user_id=? ORDER BY updated_at DESC LIMIT 100', uid),
     conversation: (uid, cid) => get('SELECT * FROM conversations WHERE id=? AND user_id=?', cid, uid),
     deleteConversation: (uid, cid) => run('DELETE FROM conversations WHERE user_id=? AND id=?', uid, cid),
-    messages: cid => all('SELECT id,role,content,meta,created_at FROM messages WHERE conversation_id=? ORDER BY created_at,id LIMIT 200', cid).map(x => ({...x, meta: JSON.parse(x.meta)})),
+    messages: cid => all('SELECT id,role,content,meta,created_at FROM messages WHERE conversation_id=? ORDER BY created_at,rowid LIMIT 200', cid).map(x => ({...x, meta: JSON.parse(x.meta)})),
     addMessage(cid, role, content, meta = {}) {
       const msg = { id: id(), role, content, meta, created_at: now() };
       run('INSERT INTO messages VALUES (?,?,?,?,?,?)', msg.id, cid, role, content, JSON.stringify(meta), msg.created_at);

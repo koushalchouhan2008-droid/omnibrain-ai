@@ -1,10 +1,18 @@
 /** Official, fixed-host provider adapters. Keys are supplied server-side only. */
 export const PROVIDERS = Object.freeze({
+  ollama: {label:'Ollama (server-local)',model:'llama3.2',category:'ai',supportsStreaming:false},
   openai: { label:'OpenAI', model:'gpt-4.1-mini', category:'ai', supportsStreaming: true },
   gemini: { label:'Google Gemini', model:'gemini-2.5-flash', category:'ai', supportsStreaming: false },
   anthropic: { label:'Anthropic Claude', model:'claude-haiku-4-5', category:'ai', supportsStreaming: false },
   deepseek: { label:'DeepSeek', model:'deepseek-chat', category:'ai', supportsStreaming: true },
   grok: { label:'xAI Grok', model:'grok-3-mini', category:'ai', supportsStreaming: true },
+  groq: {label:'Groq',model:'llama-3.3-70b-versatile',category:'ai',supportsStreaming:true},
+  openrouter: {label:'OpenRouter',model:'openrouter/auto',category:'ai',supportsStreaming:true},
+  mistral: {label:'Mistral',model:'mistral-small-latest',category:'ai',supportsStreaming:true},
+  together: {label:'Together AI',model:'meta-llama/Llama-3.3-70B-Instruct-Turbo',category:'ai',supportsStreaming:true},
+  huggingface: {label:'Hugging Face',model:'Qwen/Qwen2.5-7B-Instruct',category:'ai',supportsStreaming:false},
+  perplexity: {label:'Perplexity',model:'sonar',category:'ai',supportsStreaming:false},
+  tavily: {label:'Tavily Search',model:null,category:'search',supportsStreaming:false},
   brave: { label:'Brave Web Search', model:null, category:'search', supportsStreaming: false },
 });
 
@@ -19,6 +27,12 @@ function validatedModel(model, provider) {
 }
 
 const chatEndpoints = {
+  groq:'https://api.groq.com/openai/v1/chat/completions',
+  openrouter:'https://openrouter.ai/api/v1/chat/completions',
+  mistral:'https://api.mistral.ai/v1/chat/completions',
+  together:'https://api.together.xyz/v1/chat/completions',
+  huggingface:'https://router.huggingface.co/v1/chat/completions',
+  perplexity:'https://api.perplexity.ai/chat/completions',
   openai:'https://api.openai.com/v1/chat/completions',
   deepseek:'https://api.deepseek.com/chat/completions',
   grok:'https://api.x.ai/v1/chat/completions'
@@ -26,7 +40,7 @@ const chatEndpoints = {
 
 async function checkedFetch(url, opts, signal) {
   let resp;
-  try { resp = await fetch(url, { ...opts, signal }); }
+  try { resp = await fetch(url, { ...opts, signal, redirect:'error' }); }
   catch (error) {
     if (signal?.aborted) throw new ProviderError('Request timed out or was cancelled.', 504);
     throw new ProviderError(`Provider unreachable: ${error.message}`, 502);
@@ -35,7 +49,7 @@ async function checkedFetch(url, opts, signal) {
     const data = (await resp.text()).slice(0, 600);
     let parsed;
     try { parsed = JSON.parse(data); } catch {}
-    const detail = parsed?.error?.message || parsed?.message || `HTTP ${resp.status}`;
+    const detail = `HTTP ${resp.status}; check credentials, model availability and quota.`;
     const clean = String(detail).replace(/[\r\n]+/g, ' ').slice(0, 220);
     throw new ProviderError(`${resp.status} from provider: ${clean}`, resp.status);
   }
@@ -103,7 +117,7 @@ async function anthropic({key,model,messages,signal}) {
   const promptMessages = messages.filter(m => m.role !== 'system').map(m => ({ role:m.role === 'assistant'?'assistant':'user', content:m.content }));
   const resp = await checkedFetch('https://api.anthropic.com/v1/messages', {
     method:'POST', headers:{'x-api-key':key,'anthropic-version':'2023-06-01','Content-Type':'application/json'},
-    body:JSON.stringify({model:actualModel,max_tokens:1800,system:systemText,messages:promptMessages})
+    body:JSON.stringify({model:actualModel,max_tokens:8192,system:systemText,messages:promptMessages})
   },signal);
   const data=await resp.json();
   const answer = (data.content || []).filter(x=>x.type==='text').map(x=>x.text).join('\n');
@@ -117,7 +131,7 @@ async function gemini({key,model,messages,signal}) {
   const contents = messages.filter(m=>m.role!=='system').map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
   const resp = await checkedFetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(actualModel)}:generateContent`, {
     method:'POST', headers:{'x-goog-api-key':key,'Content-Type':'application/json'},
-    body:JSON.stringify({systemInstruction:{parts:[{text:system || 'Be helpful and accurate.'}]},contents,generationConfig:{maxOutputTokens:1800}})
+    body:JSON.stringify({systemInstruction:{parts:[{text:system || 'Be helpful and accurate.'}]},contents,generationConfig:{maxOutputTokens:8192}})
   },signal);
   const data=await resp.json();
   const answer = data.candidates?.[0]?.content?.parts?.map(x=>x.text || '').join('');
@@ -126,7 +140,8 @@ async function gemini({key,model,messages,signal}) {
 }
 
 export async function complete({provider,key,model,messages,signal,onDelta,stream=false}) {
-  if (!PROVIDERS[provider] || provider==='brave') throw new ProviderError('Unknown AI provider.',400);
+  if (!PROVIDERS[provider] || PROVIDERS[provider].category!=='ai') throw new ProviderError('Unknown AI provider.',400);
+  if(provider==='ollama'){if(process.env.OLLAMA_ENABLED!=='true')throw new ProviderError('Operator must enable OLLAMA_ENABLED=true on the backend.',400);const actualModel=validatedModel(model,provider);const resp=await checkedFetch('http://127.0.0.1:11434/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:actualModel,messages,stream:false})},signal);const d=await resp.json();if(!d.choices?.[0]?.message?.content)throw new ProviderError('Ollama returned no text.');return {content:d.choices[0].message.content,model:actualModel,input:d.usage?.prompt_tokens,output:d.usage?.completion_tokens};}
   if (!key) throw new ProviderError('Provider is not configured.',400);
   if (provider === 'gemini') return gemini({key,model,messages,signal});
   if (provider === 'anthropic') return anthropic({key,model,messages,signal});
@@ -145,13 +160,16 @@ export async function braveSearch({key,query,signal}) {
 }
 
 export async function testConnection(provider,key,signal) {
-  if (!(provider in PROVIDERS)) throw new ProviderError('Unknown provider.',400);
+  if (!Object.hasOwn(PROVIDERS,provider)) throw new ProviderError('Unknown provider.',400);
   let url, headers = {Accept:'application/json'};
+  if(provider==='ollama'){if(process.env.OLLAMA_ENABLED!=='true')throw new ProviderError('Ollama is not enabled on this backend.',400);await checkedFetch('http://127.0.0.1:11434/api/tags',{},signal);return true;}
   if (provider==='openai') {url='https://api.openai.com/v1/models';headers.Authorization=`Bearer ${key}`;}
   else if (provider==='deepseek') {url='https://api.deepseek.com/models';headers.Authorization=`Bearer ${key}`;}
   else if (provider==='grok') {url='https://api.x.ai/v1/models';headers.Authorization=`Bearer ${key}`;}
   else if (provider==='anthropic') {url='https://api.anthropic.com/v1/models';headers['x-api-key']=key;headers['anthropic-version']='2023-06-01';}
   else if (provider==='gemini') {url='https://generativelanguage.googleapis.com/v1beta/models';headers['x-goog-api-key']=key;}
+  else if(provider==='tavily'){await checkedFetch('https://api.tavily.com/search',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({query:'connection test',max_results:1})},signal);return true;}
+  else if(chatEndpoints[provider]){await complete({provider,key,messages:[{role:'user',content:'Reply OK'}],signal});return true;}
   else {url='https://api.search.brave.com/res/v1/web/search?q=connection+test&count=1'; headers['X-Subscription-Token']=key;}
   await checkedFetch(url,{headers},signal);
   return true;

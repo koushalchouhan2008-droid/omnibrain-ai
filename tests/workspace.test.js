@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createApp} from '../server/app.js';
+import {createStore,openDatabase} from '../server/database.js';
+import {getConfig} from '../server/config.js';
+import {publicURL,publicIPv4} from '../server/network.js';
+test('workspace connections, isolation, agent, automation, website and Gmail confirmation',async()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'omni-ws-'));const store=createStore(openDatabase(dir));const config=getConfig({dbDir:dir,secret:Buffer.alloc(32,8)});const {server}=createApp({store,config});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${server.address().port}`;const original=globalThis.fetch;
+ const req=async(p,body,cookie,method=body?'POST':'GET')=>{const r=await original(base+p,{method,headers:{...(body?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{})},body:body?JSON.stringify(body):undefined});return {status:r.status,data:await r.json(),cookie:r.headers.get('set-cookie')?.split(';')[0]};};const w=(p,b,c,m)=>req('/api/v1/workspace'+p,b,c,m);
+ try{const a=(await req('/api/v1/auth/register',{name:'Person A',email:'a@example.com',password:'password-123456'})).cookie;const b=(await req('/api/v1/auth/register',{name:'Person B',email:'b@example.com',password:'password-123456'})).cookie;
+ const link=await w('/links',{name:'Custom AI',kind:'ai',url:'https://api.example.com/v1/chat/completions',model:'test-model',key:'secret-12345'},a);assert.equal(link.status,201);const overview=await w('/overview',null,a);assert.equal(overview.data.links.length,1);assert.ok(!JSON.stringify(overview).includes('secret-12345'));assert.equal((await w('/overview',null,b)).data.links.length,0);assert.equal((await w('/item/'+link.data.id,null,b,'DELETE')).status,404);assert.equal((await w('/links',{name:'Local',kind:'website',url:'https://127.0.0.1'},a)).status,400);
+ const agent=await w('/agents',{name:'Writer',instructions:'Write clearly'},a);assert.equal(agent.status,201);const auto=await w('/automations',{name:'Manual',prompt:'Write a message',steps:['ai'],interval:0},a);assert.equal(auto.status,201);assert.equal((await w('/gmail/send',{to:'b@example.com',subject:'hi',body:'hello',confirm:false},a)).status,400);
+ await req('/api/v1/providers/openai/credential',{key:'sk-test-12345',model:'gpt-4.1-mini'},a,'PUT');globalThis.fetch=async(url,opts)=>{if(String(url).startsWith('https://api.openai.com/')){const body=JSON.parse(opts.body);const answer=body.messages[0].content.includes('complete single HTML')?'<!doctype html><html><body><h1>Example website</h1></body></html>':'Mocked result';return new Response(JSON.stringify({choices:[{message:{content:answer}}]}));}return original(url,opts);};
+ assert.equal((await w('/agent/run',{id:agent.data.id,prompt:'Write'},a)).data.answer,'Mocked result');assert.equal((await w('/automation/run',{id:auto.data.id},a)).data.status,'done');const site=await w('/site',{prompt:'Build website'},a);assert.equal(site.status,200);assert.match(site.data.html,/Example website/);const preview=await original(base+'/api/v1/workspace/preview/'+site.data.id,{headers:{Cookie:a}});assert.equal(preview.status,200);assert.match(preview.headers.get('content-security-policy'),/sandbox allow-scripts/);assert.equal((await w('/item/'+site.data.id,null,b)).status,404);assert.equal((await w('/gmail/draft',{to:'b@example.com',subject:'Hello',prompt:'Write a greeting'},a)).data.body,'Mocked result');
+ }finally{globalThis.fetch=original;await new Promise(r=>server.close(r));store.close();fs.rmSync(dir,{recursive:true,force:true});}
+});
+test('public network validation',()=>{for(const ip of ['127.0.0.1','10.0.0.1','192.168.1.1','169.254.169.254','172.16.0.1','100.64.0.1','0.0.0.0','224.0.0.1','198.51.100.1'])assert.equal(publicIPv4(ip),false);assert.equal(publicIPv4('8.8.8.8'),true);for(const x of ['http://example.com','https://localhost','https://192.168.1.1','https://user:password@example.com','https://example.com:8443'])assert.throws(()=>publicURL(x));});

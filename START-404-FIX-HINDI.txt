@@ -1,0 +1,65 @@
+OMNIBRAIN AI — 404 / ACCOUNT FIX
+================================
+
+Screenshot wala Request failed (404) ka probable reason: frontend ko
+/api/v1/auth/register endpoint nahin mil raha. Source code mein endpoint
+maujood tha. Static HTML/ZIP ko Netlify par upload karne se Node server
+ya SQLite database start nahi hote. Live URL bina exact hosting cause
+confirm nahi ho sakta.
+
+OPTION 1: LAPTOP PAR (no hosting cost)
+1. ZIP extract karo. Node.js 22.13+ install karo.
+2. Windows: START-WINDOWS.bat double click. Mac/Linux: npm start.
+3. Terminal mein dikhaya hua http://127.0.0.1:3000 (ya alternate port)
+   browser mein kholo. Pehle Backend connected. aana chahiye.
+4. Create account. Apni app ka naya 12+ character password use karo;
+   Gmail ka password nahi. Account data local data/ mein persist hoga.
+
+OPTION 2: INTERNET / PHONE — single HTTPS service (recommended)
+1. Extracted project ki root files private GitHub repo mein upload karo.
+   package.json, Dockerfile, render.yaml, server/, web/ same level par.
+   .env, data/, API keys, dist/ upload mat karo.
+2. Persistent Node hosting choose karo. Render par New > Blueprint se
+   repo select kar sakte ho (included render.yaml uses paid Starter plan
+   + persistent disk; review cost before deploying). Or any Docker/Node
+   host with persistent writable storage and HTTPS. Netlify required nahi.
+3. APP_ENCRYPTION_KEY generate on laptop:
+   node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+   Output only hosting secret field mein paste karo. Private backup rakho.
+   Blueprint DB_DIR=/app/data, HOST=0.0.0.0, PORT=3000, production set karta hai.
+   Direct same-origin deployment mein ORIGIN unset rakh sakte ho.
+4. Host ka HTTPS URL /api/health open karo. Expected JSON: ok:true,
+   service: OMNIBRAIN AI. Then same HTTPS URL (without /api/health) kholo.
+5. Create account. AI provider key Connect section mein add karna hoga.
+   Persistent disk and key preserve karo, warna account/credentials lost ho sakte hain.
+
+OPTION 3: EXISTING NETLIFY WEBSITE KO REPAIR KARNA
+1. Pehle above Node backend deploy karo. Backend HTTPS /api/health verify karo.
+2. Netlify > Project configuration > Environment variables:
+   OMNI_BACKEND_URL = actual backend HTTPS origin (no /api or extra path).
+   Example only: https://your-backend.example.com
+3. Backend environment ORIGIN = actual Netlify HTTPS origin (no trailing slash).
+   Backend restart karo. Direct backend URL se sign-in ab intentionally blocked
+   ho sakta hai; Netlify URL use karo. Health check public rahega.
+4. Netlify project ko GitHub repo se import/redeploy karo; base root,
+   build npm run build, publish dist. New build now verifies backend health
+   and auth route before writing dist/_redirects.
+5. Netlify URL /api/health check karo; JSON milna chahiye, not HTML or 404.
+   Same URL par signup karo. Clear old cached assets/hard refresh if needed.
+6. Manual Netlify Drop: build on laptop with OMNI_BACKEND_URL configured,
+   upload generated dist/ folder only (not ZIP/project/web/standalone.html).
+   See NETLIFY-DEPLOYMENT-GUIDE.md for commands.
+
+New auth UI: backend missing ho toh password POST nahi hoga; retry connection
+button aayega. Signup successful hone ke baad session verify hota hai.
+Offline standalone.html preview live account create nahi kar sakta.
+
+Existing database migrate karna ho toh old data/ and encryption key preserve
+karo. New host with empty data/ has no previous accounts. Never share keys.
+
+Verification: npm run check passed 16 tests locally (Node 22.16.0), including
+real HTTP signup/login, mock deployment routing, frontend auth controller.
+Browser rendering test was blocked by this environment's browser policy.
+No live hosting account/domain or provider keys were supplied; live deploy
+and external HTTPS proxy have not been verified. Render config supplied as
+an optional deployment path, not a hosted URL.

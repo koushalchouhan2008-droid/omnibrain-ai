@@ -1,0 +1,1 @@
+export default async () => new Response(JSON.stringify({frontend:'OMNIBRAIN AI',version:'3.0.0',architecture:'Netlify frontend with persistent Node backend',backendConfigured:!!process.env.OMNI_BACKEND_URL}),{headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});

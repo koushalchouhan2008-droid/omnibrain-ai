@@ -1,0 +1,31 @@
+OMNIBRAIN AI 2.0 — START HERE / HINGLISH
+======================================
+1. ZIP extract karo. Existing OmniBrain ka database/data folder ho to backup lo;
+   upgrade project ke data folder mein copy kar sakte ho. Encryption key bhi preserve karo.
+2. Node.js 22.13+ (current LTS recommended) install karo: https://nodejs.org/
+3. Windows: START-WINDOWS.bat double-click. Mac/Linux: bash START-MAC-LINUX.sh
+   Alternative: project folder mein terminal open, npm start. No npm install needed.
+4. Browser mein http://127.0.0.1:3000 open karo (ya terminal ka URL).
+5. Create account: apna Omnibrain email + NEW local password use karo, Gmail password nahi.
+6. Connections: official API keys add karo; Test connection press karo.
+7. Chat: Smart Auto ek model, Manual selected models, Ultimate Brain multiple models
+   plus connected web sources use karke ek synthesis banata hai. Ultimate needs 2 AI keys.
+8. Add your AI & website: name, type, HTTPS endpoint and API key (if required).
+   Custom AI needs OpenAI-compatible complete chat/completions URL + model ID.
+   Custom Search needs GET JSON endpoint with results array (title,url,description).
+   Public Website reads page text. Bookmark opens real login page in another tab;
+   it DOES NOT share the login session or let OmniBrain operate that app.
+9. Creation Studio: website -> prompt -> preview -> revise -> download HTML.
+   Image needs OpenAI key; video needs xAI Grok key and eligible model/billing.
+   Chat shortcuts: /website Build a portfolio ; /image A futuristic city ; /video A cinematic lake.
+10. Agents: template or own instructions, save, then run task. Automations: choose
+    manual or interval and up to five ordered steps. Server must remain running.
+11. Gmail: see docs/GMAIL-SETUP.md. Google official login only. Chat mein e.g.
+    "Send an email to example@gmail.com requesting a meeting" opens editable draft.
+    Confirm exact recipient, subject and body before clicking send.
+
+IMPORTANT: ZIP is a local web application source project, not an Android APK or a hosted AI.
+Android can access a properly deployed HTTPS server via its browser. See original Android guide.
+Do not expose the development server directly to public internet. APIs may charge and impose limits.
+No provider accounts, tokens, paid credits or actual email messages are included.
+See README-V2.md for features, testing and known limitations.
